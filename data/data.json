@@ -1,0 +1,20 @@
+{
+  "bereiche": [
+    {
+      "titel": "Nähen",
+      "tätigkeiten": ["Rock nähen"]
+    },
+    {
+      "titel": "Kochen",
+      "tätigkeiten": ["Kuchen backen", "Nachtisch", "kreatives Getränk"]
+    },
+    {
+      "titel": "Finanzen",
+      "tätigkeiten": ["Kontoauszug abgeholt"]
+    },
+    {
+      "titel": "Internet",
+      "tätigkeiten": ["Zehn-Finger-Schreiben"]
+    }
+  ]
+}

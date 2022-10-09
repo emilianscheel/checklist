@@ -1,0 +1,23 @@
+
+
+.container {
+    width: 500px;
+    margin: 100px auto;
+
+    h1 {
+        text-align: left;
+    }
+
+    ul {
+        list-style: none;
+
+        li {
+            display: flex;
+            padding: 10px 0px;
+
+            a {
+                flex: 1;
+            }
+        }
+    }
+}
