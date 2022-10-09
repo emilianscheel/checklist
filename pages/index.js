@@ -28,8 +28,7 @@ export default function Page({ data }) {
 
 export function getServerSideProps() {
 
-    const data = fs.readFileSync('./data/data.json',
-            {encoding:'utf8'});
+    const data = fs.readFileSync(process.cwd() + '/data/data.json', {encoding:'utf8'});
 
     return {
         props: {
