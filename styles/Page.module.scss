@@ -90,6 +90,19 @@
     h2 {
         margin-top: 0;
     }
+
+    .successes_list {
+        display: flex;
+        flex-direction: row;
+
+        .success {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+    }
 }
 
 .level_container {
@@ -104,19 +117,18 @@
         margin-top: 0;
     }
 
-    &::before {
+    .more {
         position: absolute;
         right: 0;
         width: 100px;
         background: linear-gradient(to right, transparent, rgb(219, 219, 219));
         height: 100%;
-        content: "Nach rechts scrollen";
         text-align: right;
-        padding-right: 10px;
+        padding-right: 20px;
         z-index: 1;
         top: 0;
         display: flex;
-        justify-content: center;
+        justify-content: flex-end;
         align-items: center;
         color: grey;
         border-top-right-radius: 20px;
@@ -175,7 +187,40 @@
             align-items: center;
             color: grey;
             transition: all 0.2s ease;
+            position: relative;
+            cursor: pointer;
+
+            .annotation {
+                max-height: 0px;
+                max-width: 0px;
+                position: absolute;
+                background: rgb(244, 244, 244);
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 12px;
+                color: grey;
+                width: max-content;
+                z-index: 2;
+                transition: all 0.2s ease;
+                overflow: hidden;
+            }
         }
+
+        .level_ball:hover .annotation {
+            max-height: inherit;
+            max-width: inherit;
+            padding: 6px 8px;
+            color: black;
+        }
+
+        .top .level_ball .annotation {
+            top: 33px;
+        }
+
+        .bottom .level_ball .annotation {
+            bottom: 33px;
+        }
+
 
         .absolved .level_ball {
             background-color: rgb(0, 192, 77);

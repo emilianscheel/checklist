@@ -22,9 +22,15 @@ export default function Page({ _data, _level, words }) {
         let pct = ((100-_val)/100)*c;
         return pct
     }
-
+    function getFullPercentage() {
+        let sum = 0;
+        data['bereiche'].forEach(bereich => sum = sum + bereich['tätigkeiten'].length)
+        let sumChecked = 0
+        data['bereiche'].forEach((bereich) => bereich['tätigkeiten'].forEach((tätigkeit) => tätigkeit['checked'] ? sumChecked ++ : null))
+        
+        return sumChecked / sum * 100
+    }
     function getPercentage(bereich) {
-
         let sum = bereich['tätigkeiten'].length
         let sumChecked = 0
         bereich['tätigkeiten'].forEach((tätigkeit) => tätigkeit['checked'] ? sumChecked ++ : null)
@@ -83,17 +89,34 @@ export default function Page({ _data, _level, words }) {
                                     </svg>
                                 </div>}
                                 <div className={styles.level + " " + ((index+1) % 2 == 0 ? styles.top : styles.bottom) + " " + (index == 0 ? isLevelAbsolved(_level) ? styles.absolved : "" : isLevelAbsolved(_level) && isLevelAbsolved(level['level'][index-1]) ? styles.absolved : "")}>
-                                    <div className={styles.level_ball}>{_level['stufe']}</div>
+                                    <div className={styles.level_ball}>
+                                        <span>{_level['stufe']}</span>
+                                        <div className={styles.annotation}>
+                                            <span>{_level['name']}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                
                             </>
                         )}
+                    </div>
+                    <div className={styles.more}>
+                        <span className="material-symbols-outlined">chevron_right</span>
                     </div>
                 </div>
 
                 <div className={styles.successes_container}>
                     <h2>Erfolge</h2>
                     <p></p>
+                    <div className={styles.successes_list}>
+                        <div className={styles.success}>
+                            <svg width="50" height="50" style={{ 'margin-right': '6px' }}>
+                                <circle r="22" cx="25" cy="25" fill="transparent" stroke="lightgrey" strokeWidth="5px" strokeDasharray={137} strokeDashoffset="0"></circle>
+                                <circle r="22" cx="25" cy="25" fill="transparent" stroke="#216ec1" strokeWidth="5px" strokeDasharray={137} strokeDashoffset={strokeDasharray(getFullPercentage())}></circle>
+                            </svg>
+                            <span>{Math.round(getFullPercentage())} %</span>
+                            <span>Gesamt</span>
+                        </div>
+                    </div>
                 </div>
 
                 {data['bereiche'].map((bereich, index) => 
