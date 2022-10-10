@@ -1,11 +1,59 @@
 
 
 .container {
-    width: 500px;
+    width: 700px;
     margin: 100px auto;
 
     h1 {
         text-align: left;
+        position: relative;
+    }
+
+    .line {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        h1 {
+            flex: 1;
+        }
+    }
+
+    circle {
+        transition: stroke-dashoffset 0.3s linear;
+    }
+
+    .expand_icon {
+        margin-right: 8px;
+        cursor: pointer;
+
+        &.expand_icon_open {
+            span {
+                transform: rotate(180deg);
+            }
+        }
+
+        span {
+            transition: 0.2s ease;
+            border-radius: 50px;
+            padding: 8px;
+            user-select: none;
+        }
+        span:hover {
+            background: rgb(255, 255, 255);
+        }
+    }
+
+    .expand_content {
+        max-height: 0;
+        overflow: hidden;
+        box-sizing: border-box;
+        transition: all 0.2s ease;
+
+        &.expand_open {
+            max-height: inherit;
+            transition: all 0.2s ease;
+        }
     }
 
     ul {
@@ -20,4 +68,142 @@
             }
         }
     }
+}
+
+.checklist_name {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;
+    color: grey;
+}
+
+.successes_container { 
+    padding: 20px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 20px;
+    margin-bottom: 20px;
+    position: relative;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
+    h2 {
+        margin-top: 0;
+    }
+}
+
+.level_container {
+    padding: 20px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 20px;
+    margin-bottom: 20px;
+    position: relative;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
+    h2 {
+        margin-top: 0;
+    }
+
+    &::before {
+        position: absolute;
+        right: 0;
+        width: 100px;
+        background: linear-gradient(to right, transparent, rgb(219, 219, 219));
+        height: 100%;
+        content: "Nach rechts scrollen";
+        text-align: right;
+        padding-right: 10px;
+        z-index: 1;
+        top: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: grey;
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+    }
+
+    .level_list {
+        display: flex;
+        flex-direction: row;
+        gap: 6px;
+        padding-bottom: 20px;
+        overflow: scroll;
+        position: relative;
+
+        svg {
+            height: 100px;
+            width: 120px;
+            stroke: rgb(215, 215, 215);
+            transition: all 0.2s ease;
+        }
+
+        .absolved svg {
+            stroke:rgb(0, 192, 77);
+        }
+
+        .level {
+            display: flex;
+            flex-direction: column;
+
+            &:last-child {
+                padding-right: 100px;
+            }
+        }
+
+        .bottom {
+            justify-content: end;
+        }
+
+        .top + .level {
+            transform: scaleY(-1);
+        }
+
+        .start .level_ball {
+            width: auto !important;
+            background:transparent !important;
+            color: black !important;
+        }
+
+        .level_ball:nth-child(odd) {
+            width: 28px;
+            height: 28px;
+            background-color: rgb(189, 189, 189);
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: grey;
+            transition: all 0.2s ease;
+        }
+
+        .absolved .level_ball {
+            background-color: rgb(0, 192, 77);
+            color: rgb(0, 92, 37);
+        }
+    }
+}
+
+.link {
+    color: rgb(0, 128, 255);
+    position: relative;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.link::before {
+    content: '';
+    width: 100%;
+    height: 1px;
+    border: none;
+    background-color: rgb(0, 128, 255);
+    bottom: 0px;
+    position: absolute;
+}
+.link:hover {
+    color: rgb(0, 103, 206);
+}
+
+.link:hover::before {
+    background: rgb(0, 103, 206);
 }

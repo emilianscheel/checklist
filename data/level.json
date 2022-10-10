@@ -1,0 +1,34 @@
+{
+  "level": [
+    {
+      "stufe": 1,
+      "name": "Basis",
+      "vorraussetzungen": ["Rock nähen"]
+    },
+    {
+      "stufe": 2,
+      "name": "Handwerkliche Fähigkeiten",
+      "vorraussetzungen": ["Kuchen backen"]
+    },
+    {
+      "stufe": 3,
+      "name": "Basis #2",
+      "vorraussetzungen": ["Fahrradschlauch gewechselt"]
+    },
+    {
+      "stufe": 3,
+      "name": "Basis #2",
+      "vorraussetzungen": ["Fahrradschlauch gewechselt"]
+    },
+    {
+      "stufe": 3,
+      "name": "Basis #2",
+      "vorraussetzungen": ["Nachtisch"]
+    },
+    {
+      "stufe": 3,
+      "name": "Basis #2",
+      "vorraussetzungen": ["Fahrradschlauch gewechselt"]
+    }
+  ]
+}

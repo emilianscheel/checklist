@@ -2,19 +2,46 @@
   "bereiche": [
     {
       "titel": "Nähen",
-      "tätigkeiten": ["Rock nähen"]
+      "offen": true,
+      "tätigkeiten": [
+        {
+          "titel": "Rock nähen",
+          "checked": true
+        }
+      ]
     },
     {
       "titel": "Kochen",
-      "tätigkeiten": ["Kuchen backen", "Nachtisch", "kreatives Getränk"]
+      "offen": true,
+      "tätigkeiten": [
+        {
+          "titel": "Kuchen backen",
+          "checked": false
+        },
+        {
+          "titel": "Nachtisch",
+          "checked": true
+        },
+        {
+          "titel": "kreatives Getränk",
+          "checked": false
+        }
+      ]
     },
     {
       "titel": "Finanzen",
-      "tätigkeiten": ["Kontoauszug abgeholt"]
+      "offen": true,
+      "tätigkeiten": [
+        {
+          "titel": "Kontoauszug abgeholt",
+          "checked": false
+        }
+      ]
     },
     {
       "titel": "Internet",
-      "tätigkeiten": ["Zehn-Finger-Schreiben"]
+      "offen": true,
+      "tätigkeiten": [{ "titel": "Zehn-Finger-Schreiben", "checked": true }]
     }
   ]
 }

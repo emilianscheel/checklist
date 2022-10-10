@@ -1,38 +1,25 @@
-const fs = require('fs');
-import styles from './../styles/Page.module.scss'
+import { useRouter } from "next/router";
+import styles from '../styles/Start.module.scss'
 
-export default function Page({ data }) {
+export default function Page() {
+
+    const router = useRouter()
+
+    function onOpen(event) {
+        event.preventDefault();
+
+        router.push('/' + event.target.elements.words.value)
+    }
+
     return (
         <main>
-            <h1>Zum Erwachsen werden ...</h1>
-            <div className={styles.container}>
-                {data['bereiche'].map((bereich, index) => 
-                    <div>
-                        <h1>{bereich['titel']}</h1>
-                        <ul>
-                            {bereich['tätigkeiten'].map((tätigkeit, _index) => 
-                                <li>
-                                    <a>{tätigkeit}</a>
-                                    <div>
-                                        <input id={index + "-" + _index} type="checkbox"/><label for={index + "-" + _index}></label>
-                                    </div>
-                                </li>
-                            )}
-                        </ul>
-                    </div>
-                )}
-            </div>
+            <form onSubmit={onOpen} className={styles.form}>
+                <h1>Zum Erwachsen werden ...</h1>
+                <h3>Checkliste eröffnen oder erstellen</h3>
+                <p>Um eine Checkliste zu erstellen, gebe hier ein Passwort ein und bestätige mit „Öffnen“ Wenn du bereits ein Checkliste erstellt hast, gebe dein Passwort ein.</p>
+                <input name="words" placeholder="Passwort"/>
+                <button type="submit">Öffnen</button>
+            </form>
         </main>
     )
-}
-
-export function getServerSideProps() {
-
-    const data = fs.readFileSync(process.cwd() + '/data/data.json', {encoding:'utf8'});
-
-    return {
-        props: {
-            data: JSON.parse(data)
-        }
-    }
 }
