@@ -1,7 +1,7 @@
 const fs = require('fs');
 import styles from './../styles/Page.module.scss';
 import { CircularProgressbar } from 'react-circular-progressbar';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
@@ -11,6 +11,7 @@ export default function Page({ _data, _level, words }) {
 
     const [data, setData] = useState(_data)
     const [level, setLevel] = useState(_level)
+    const [showPassword, setShowPassword] = useState(false)
 
     function strokeDasharray(val) {
         let _val = val;
@@ -51,13 +52,12 @@ export default function Page({ _data, _level, words }) {
         fetchDB(_data)
         setData({..._data})
     }
-    function encryptWords(words) {
-        return words.split('').slice(0, 4).map(() => 'X').concat(words.slice(4)).join('')
-    }
-    function isLevelAbsolved(level) {
+    function isLevelAbsolved(atIndex) {
         let tätigkeiten = []
         data['bereiche'].forEach(bereich => tätigkeiten = tätigkeiten.concat(bereich['tätigkeiten']))
-        return level['vorraussetzungen'].every(v => tätigkeiten.some(t => t['titel'] == v && t['checked']))
+        return {..._level}['level'].filter((el, index) => atIndex >= index).every((_level) => {
+            return _level['vorraussetzungen'].every(v => tätigkeiten.some(t => t['titel'] == v && t['checked']))
+        })
     }
     function fetchDB(data) {
         fetch('/api/update', { 
@@ -66,29 +66,46 @@ export default function Page({ _data, _level, words }) {
             body: JSON.stringify({ data: data, words: words })
         })
     }
+    function getCurrentLevel() {
+        let currentLevel = 0;
+        level['level'].forEach((_level, index) => {
+            if (isLevelAbsolved(index)) {
+                currentLevel = index+1
+            }
+        })
+        return currentLevel;
+    }
+
+    const level_list = useRef(null);
+
+    function scrollMore(event) {
+        event.preventDefault()
+        level_list.current.scrollLeft = level_list.current.scrollLeft + 220;
+    }
 
     return (
         <main>
             <h1>Zum Erwachsen werden ...</h1>
             <div className={styles.checklist_name}>
-                <span className="material-symbols-outlined">check_circle</span>
-                <span>Checkliste von {encryptWords(words)} <Link href="/"><a className={styles.link}>Ändern</a></Link></span>
+                <span className="material-symbols-outlined">account_circle</span>
+                <p style={{ 'display': 'flex', 'gap': '4px', 'alignItems': 'center', 'justifyContent': 'center' }}>Checkliste von <span onClick={() => setShowPassword(!showPassword)} className={styles.passcode + " " + (showPassword ? styles.show : styles.hide)}><span className="material-symbols-outlined">{showPassword ? "visibility_off" : "visibility"}</span><span dangerouslySetInnerHTML={{__html: showPassword ? words : Array.apply(null, {length: words.length}).map((char => "&middot;")).join('')}}></span></span>  <Link href="/"><a className={styles.link}>Ändern</a></Link></p>
             </div>
             <div className={styles.container}>
                 <div className={styles.level_container}>
                     <h2>Level</h2>
-                    <div className={styles.level_list}>
+                    <p>Du hast Level {getCurrentLevel()} erreicht.</p>
+                    <div className={styles.level_list} ref={level_list}>
                         <div className={styles.level + " " + styles.start + " " + styles.top}>
                             <div className={styles.level_ball}>Start</div>
                         </div>
-                        {level['level'].map((_level, index) => 
+                        {level['level'].map((_level, _index) => 
                             <>
-                                {<div className={styles.level + " " + (index == 0 ? isLevelAbsolved(_level) ? styles.absolved : "" : isLevelAbsolved(_level) && isLevelAbsolved(level['level'][index-1]) ? styles.absolved : "")}>
+                                {<div className={styles.level + " " + (isLevelAbsolved(_index) ? styles.absolved : "")}>
                                     <svg width="401" height="271" viewBox="0 0 401 271">
-                                        <path id="Pfad" fill="none" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" d="M 389 11 C 389 11 314.440674 3.591095 266 47 C 197.935989 107.993866 204.472717 184.775635 139 226 C 75.958435 265.693604 12 259 12 259 L 12 259"/>
+                                        <path id="Pfad" fill="none" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" d="M 389 11 C 389 11 314.440674 3.591095 266 47 C 197.935989 107.993866 204.472717 184.775635 139 226 C 75.958435 265.693604 12 259 12 259 L 12 259"/>
                                     </svg>
                                 </div>}
-                                <div className={styles.level + " " + ((index+1) % 2 == 0 ? styles.top : styles.bottom) + " " + (index == 0 ? isLevelAbsolved(_level) ? styles.absolved : "" : isLevelAbsolved(_level) && isLevelAbsolved(level['level'][index-1]) ? styles.absolved : "")}>
+                                <div className={styles.level + " " + ((_index+1) % 2 == 0 ? styles.top : styles.bottom) + " " + (isLevelAbsolved(_index) ? styles.absolved : "")}>
                                     <div className={styles.level_ball}>
                                         <span>{_level['stufe']}</span>
                                         <div className={styles.annotation}>
@@ -99,23 +116,8 @@ export default function Page({ _data, _level, words }) {
                             </>
                         )}
                     </div>
-                    <div className={styles.more}>
+                    <div className={styles.more} onClick={scrollMore}>
                         <span className="material-symbols-outlined">chevron_right</span>
-                    </div>
-                </div>
-
-                <div className={styles.successes_container}>
-                    <h2>Erfolge</h2>
-                    <p></p>
-                    <div className={styles.successes_list}>
-                        <div className={styles.success}>
-                            <svg width="50" height="50" style={{ 'margin-right': '6px' }}>
-                                <circle r="22" cx="25" cy="25" fill="transparent" stroke="lightgrey" strokeWidth="5px" strokeDasharray={137} strokeDashoffset="0"></circle>
-                                <circle r="22" cx="25" cy="25" fill="transparent" stroke="#216ec1" strokeWidth="5px" strokeDasharray={137} strokeDashoffset={strokeDasharray(getFullPercentage())}></circle>
-                            </svg>
-                            <span>{Math.round(getFullPercentage())} %</span>
-                            <span>Gesamt</span>
-                        </div>
                     </div>
                 </div>
 
@@ -127,7 +129,7 @@ export default function Page({ _data, _level, words }) {
                             </div>
                             <h1>{bereich['titel']}</h1>
                             <span>{Math.round(getPercentage(bereich))} %</span>
-                            <svg width="30" height="30" style={{ 'margin-right': '6px' }}>
+                            <svg width="30" height="30" style={{ 'marginRight': '6px' }}>
                                 <circle r="10" cx="15" cy="15" fill="transparent" stroke="lightgrey" strokeWidth="4px" strokeDasharray={62.5} strokeDashoffset="0"></circle>
                                 <circle r="10" cx="15" cy="15" fill="transparent" stroke="#216ec1" strokeWidth="4px" strokeDasharray={62.5} strokeDashoffset={bereich['strokeDashoffset'] ? bereich['strokeDashoffset'] : 0}></circle>
                             </svg>
@@ -147,6 +149,21 @@ export default function Page({ _data, _level, words }) {
                         </div>
                     </div>
                 )}
+
+                <div className={styles.successes_container}>
+                    <h2>Dein Ergebniss</h2>
+                    <p></p>
+                    <div className={styles.successes_list}>
+                        <div className={styles.success}>
+                            <svg width="50" height="50" style={{ 'marginRight': '6px' }}>
+                                <circle r="22" cx="25" cy="25" fill="transparent" stroke="lightgrey" strokeWidth="5px" strokeDasharray={137} strokeDashoffset="0"></circle>
+                                <circle r="22" cx="25" cy="25" fill="transparent" stroke="#216ec1" strokeWidth="5px" strokeDasharray={137} strokeDashoffset={strokeDasharray(getFullPercentage())}></circle>
+                            </svg>
+                            <span>{Math.round(getFullPercentage())} %</span>
+                            <span>Gesamt</span>
+                        </div>
+                    </div>
+                </div>
 
                 <p>Deine Liste wird automatisch gespeichert. Um sie zu bearbeiten und später anzuschauen, merke dir den Namen, dem du ihr gegeben hast.</p>
             </div>

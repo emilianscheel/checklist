@@ -12,23 +12,23 @@
     },
     {
       "stufe": 3,
-      "name": "Basis #2",
-      "vorraussetzungen": ["Fahrradschlauch gewechselt"]
+      "name": "Basis #3",
+      "vorraussetzungen": ["kreatives Getränk"]
     },
     {
-      "stufe": 3,
-      "name": "Basis #2",
-      "vorraussetzungen": ["Fahrradschlauch gewechselt"]
+      "stufe": 4,
+      "name": "Basis #4",
+      "vorraussetzungen": ["Kontoauszug abgeholt"]
     },
     {
-      "stufe": 3,
-      "name": "Basis #2",
-      "vorraussetzungen": ["Nachtisch"]
+      "stufe": 5,
+      "name": "Basis #5",
+      "vorraussetzungen": ["Zehn-Finger-Schreiben"]
     },
     {
-      "stufe": 3,
-      "name": "Basis #2",
-      "vorraussetzungen": ["Fahrradschlauch gewechselt"]
+      "stufe": 6,
+      "name": "Basis #6",
+      "vorraussetzungen": ["Online-Banking"]
     }
   ]
 }

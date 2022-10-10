@@ -16,7 +16,7 @@ export default function Page() {
             <form onSubmit={onOpen} className={styles.form}>
                 <h1>Zum Erwachsen werden ...</h1>
                 <h3>Checkliste eröffnen oder erstellen</h3>
-                <p>Um eine Checkliste zu erstellen, gebe hier ein Passwort ein und bestätige mit „Öffnen“ Wenn du bereits ein Checkliste erstellt hast, gebe dein Passwort ein.</p>
+                <p>Um eine Checkliste zu erstellen, gib hier ein Passwort ein und bestätige mit „Öffnen“ Wenn du bereits eine Checkliste erstellt hast, gebe dein Passwort ein.</p>
                 <input name="words" placeholder="Passwort"/>
                 <button type="submit">Öffnen</button>
             </form>

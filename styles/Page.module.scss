@@ -49,6 +49,8 @@
         overflow: hidden;
         box-sizing: border-box;
         transition: all 0.2s ease;
+        -webkit-user-select: none;
+        user-select: none;
 
         &.expand_open {
             max-height: inherit;
@@ -133,6 +135,19 @@
         color: grey;
         border-top-right-radius: 20px;
         border-bottom-right-radius: 20px;
+
+        span {
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 20px;
+            user-select: none;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background-color: white;
+                color: black;
+            }
+        }
     }
 
     .level_list {
@@ -140,12 +155,20 @@
         flex-direction: row;
         gap: 6px;
         padding-bottom: 20px;
+        padding-top: 5px;
         overflow: scroll;
         position: relative;
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;
+        scroll-behavior: smooth;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
 
         svg {
-            height: 100px;
-            width: 120px;
+            height: 140px;
+            width: 180px;
             stroke: rgb(215, 215, 215);
             transition: all 0.2s ease;
         }
@@ -190,6 +213,11 @@
             position: relative;
             cursor: pointer;
 
+            &::before {
+                transition: all 0.2s ease;
+                border-radius: 20px;
+            }
+
             .annotation {
                 max-height: 0px;
                 max-width: 0px;
@@ -214,17 +242,27 @@
         }
 
         .top .level_ball .annotation {
-            top: 33px;
+            top: 38px;
         }
 
         .bottom .level_ball .annotation {
-            bottom: 33px;
+            bottom: 38px;
         }
 
 
         .absolved .level_ball {
             background-color: rgb(0, 192, 77);
             color: rgb(0, 92, 37);
+            position: relative;
+
+            &::before {
+                width: 33px;
+                height: 33px;
+                border: 2px solid rgb(0, 192, 77);
+                border-radius: 20px;
+                position: absolute;
+                content: '';
+            }
         }
     }
 }
@@ -251,4 +289,18 @@
 
 .link:hover::before {
     background: rgb(0, 103, 206);
+}
+
+.passcode {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 4px;
+    -webkit-user-select: none;
+    user-select: none;
+
+    &.show {
+        color: black;
+    }
 }

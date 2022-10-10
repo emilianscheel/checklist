@@ -35,6 +35,10 @@
         {
           "titel": "Kontoauszug abgeholt",
           "checked": false
+        },
+        {
+          "titel": "Online-Banking",
+          "checked": false
         }
       ]
     },
