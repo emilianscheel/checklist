@@ -8,7 +8,6 @@ import { parseCookies } from '../library/cookie';
 import jwt from '../library/jwt';
 import Navbar from '../components/Navbar';
 import { useCookies } from 'react-cookie';
-const prisma = new PrismaClient()
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 export default function Page({ _data, _json,_level, user }) {
@@ -48,7 +47,7 @@ export default function Page({ _data, _json,_level, user }) {
         let title = data['bereiche'][index]['tätigkeiten'][_index]["titel"]
 
         if (event.target.checked == true) {
-            _json['checked'].push({'titel': title})
+            _json['checked'].push({'titel': title, 'type': 'todo'})
         }
         if (event.target.checked == false) {
             _json['checked'] = _json['checked'].filter((obj) => JSON.stringify(obj["titel"]) === title)
@@ -65,7 +64,7 @@ export default function Page({ _data, _json,_level, user }) {
         setData({..._data})
     }
     function isChecked(tätigkeit) {
-        return json['checked'].some(obj => obj.titel == tätigkeit)
+        return json['checked'].some(obj => obj['titel'] == tätigkeit)
     }
     function isLevelAbsolved(atIndex) {
         return {..._level}['level'].filter((el, index) => atIndex >= index).every((_level) => {
@@ -76,7 +75,7 @@ export default function Page({ _data, _json,_level, user }) {
         fetch('/api/update', { 
             method: 'POST', 
             headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cookie.accessToken}, 
-            body: JSON.stringify({ json: data })
+            body: JSON.stringify({ json: json })
         })
     }
     function getCurrentLevel() {
@@ -152,12 +151,25 @@ export default function Page({ _data, _json,_level, user }) {
                             <hr/>
                             <ul>
                                 {bereich['tätigkeiten'].map((tätigkeit, _index) => 
-                                    <li key={_index}>
-                                        <a>{tätigkeit['titel']}</a>
-                                        <div className={styles.checkbox}>
-                                            <input id={index + "-" + _index} onChange={(event) => onChangedChecked(event, index, _index)} defaultChecked={isChecked(tätigkeit['titel'])} type="checkbox"/><label htmlFor={index + "-" + _index}></label>
-                                        </div>
-                                    </li>
+                                    tätigkeit['type'] == 'todo' ? 
+                                        <li key={_index}>
+                                            <a className={styles.todo}>{tätigkeit['titel']}</a>
+                                            <div className={styles.checkbox}>
+                                                <input id={index + "-" + _index} onChange={(event) => onChangedChecked(event, index, _index)} defaultChecked={isChecked(tätigkeit['titel'])} type="checkbox"/><label htmlFor={index + "-" + _index}></label>
+                                            </div>
+                                        </li>
+                                    :
+                                    tätigkeit['type'] == 'questionnaire' ? 
+                                        <li key={_index}>
+                                            <Link href={"/question/do/" + tätigkeit['id']}>
+                                                <a className={styles.link}>{tätigkeit['titel']}</a>
+                                            </Link>
+                                            <div style={{flex: 1}}/>
+                                            <div className={styles.checkbox}>
+                                                <input disabled="false" id={index + "-" + _index} onChange={(event) => onChangedChecked(event, index, _index)} defaultChecked={isChecked(tätigkeit['titel'])} type="checkbox"/><label htmlFor={index + "-" + _index}></label>
+                                            </div>
+                                        </li>
+                                    : null
                                 )}
                             </ul>
                         </div>
@@ -187,6 +199,8 @@ export default function Page({ _data, _json,_level, user }) {
 
 export async function getServerSideProps(context) {
 
+    const prisma = new PrismaClient()
+
     const { accessToken } = parseCookies(context.req)
 
     let user = await jwt.verifyAccessToken(accessToken)
@@ -200,6 +214,8 @@ export async function getServerSideProps(context) {
             id: user.payload.id
         }
     })
+
+    await prisma.$disconnect();
 
     return {
         props: {

@@ -42,7 +42,8 @@
         },
         {
           "titel": "Fragenbogen #3",
-          "type": "question"
+          "id": "fragebogen-3",
+          "type": "questionnaire"
         }
       ]
     },
@@ -52,6 +53,7 @@
       "tätigkeiten": [
         {
           "titel": "Zehn-Finger-Schreiben",
+          "id": "test2",
           "type": "todo"
         }
       ]

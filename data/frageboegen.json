@@ -1,0 +1,49 @@
+{
+  "questionnaires": [
+    {
+      "id": "fragebogen-3",
+      "titel": "Fragebogen #3",
+      "questions": [
+        {
+          "titel": "Ab wann ist man voll geschäftsfähig?",
+          "answers": [
+            {
+              "titel": "12 Jahre"
+            },
+            {
+              "titel": "14 Jahre"
+            },
+            {
+              "titel": "16 Jahre"
+            },
+            {
+              "titel": "18 Jahre"
+            }
+          ]
+        },
+        {
+          "titel": "In welcher Höhe dürfen noch nicht geschäftsfähige Personen einkaufen?",
+          "answers": [
+            {
+              "titel": "bis 25 €"
+            },
+            {
+              "titel": "bis 65 €"
+            },
+            {
+              "titel": "monatliches Taschengeld"
+            },
+            {
+              "titel": "jährliches Taschengeld"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "test2",
+      "titel": "Test2",
+      "questions": []
+    }
+  ]
+}

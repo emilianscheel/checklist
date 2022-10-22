@@ -65,7 +65,7 @@
             display: flex;
             padding: 10px 0px;
 
-            a {
+            .todo {
                 flex: 1;
             }
         }
@@ -302,5 +302,115 @@
 
     &.show {
         color: black;
+    }
+}
+
+
+.search_container {
+
+    form {
+        display: flex;
+        flex-direction: row;
+
+        input {
+            flex: 1;
+            padding: 12px 18px;
+            font-size: 16px;
+            border: 1px solid rgb(205, 205, 205);
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+            margin: 0;
+            border-right: none;
+
+            &:active, &:focus {
+                box-shadow: 0 0 0 3px #98d2ff;
+                outline: none;
+                border: 1px solid #0091ff;
+            }
+        }
+
+        button {
+            background: #0079d6;
+            border-top-right-radius: 10px;
+            cursor: pointer;
+            border-bottom-right-radius: 10px;
+            margin: 0;
+            padding: 0px 12px;
+            border: none;
+            outline: none;
+            color: white;
+        }
+    }
+}
+
+.questionnaires_list {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    gap: 20px;
+
+    .questionnaire_item {
+        background: white;
+        padding: 16px;
+        border-radius: 10px;
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+        display: flex;
+        flex-direction: row;
+
+        .left {
+            flex: 1;
+        }
+
+        .left, .right {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            justify-content: center;
+        }
+
+        button {
+            background: #0079d6;
+            cursor: pointer;
+            border-radius: 10px;
+            margin: 0;
+            padding: 12px 14px;
+            font-size: 14px;
+            border: none;
+            outline: none;
+            color: white;
+        }
+
+        h2, p {
+            margin: 0px;
+        }
+
+        p {
+            color: grey;
+        }
+    }
+}
+
+
+.question_list {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    gap: 20px;
+
+    .question_item {
+        background: white;
+        padding: 16px;
+        border-radius: 10px;
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+        display: flex;
+        flex-direction: row;
+
+        h3, p {
+            margin: 0px;
+        }
+
+        p {
+            color: grey;
+        }
     }
 }

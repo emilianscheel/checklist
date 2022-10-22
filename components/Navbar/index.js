@@ -27,7 +27,7 @@ export default function Navbar() {
                 <div style={{flex: "1"}}></div>
                 <Link href="/account">
                     <div className={styles.button + " " + (router.pathname == "/account" ? styles.active : null)}>
-                        <span class="material-symbols-outlined">account_circle</span>
+                        <span className="material-symbols-outlined">account_circle</span>
                         <div className={styles.dropdown}>
                             <ul>
                                 <Link href="/account"><li>Konto</li></Link>
