@@ -20,7 +20,10 @@ export default async function handler(req, res) {
         let user = await prisma.users.create({
           data: {
             username: username,
-            password: encryptedPassword
+            password: encryptedPassword,
+            json: JSON.stringify({
+              "checked": []
+            })
           }
         })
         delete user.password
