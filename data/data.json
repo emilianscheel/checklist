@@ -6,7 +6,7 @@
       "tätigkeiten": [
         {
           "titel": "Rock nähen",
-          "checked": true
+          "type": "todo"
         }
       ]
     },
@@ -16,15 +16,15 @@
       "tätigkeiten": [
         {
           "titel": "Kuchen backen",
-          "checked": false
+          "type": "todo"
         },
         {
           "titel": "Nachtisch",
-          "checked": true
+          "type": "todo"
         },
         {
           "titel": "kreatives Getränk",
-          "checked": false
+          "type": "todo"
         }
       ]
     },
@@ -34,18 +34,27 @@
       "tätigkeiten": [
         {
           "titel": "Kontoauszug abgeholt",
-          "checked": false
+          "type": "todo"
         },
         {
           "titel": "Online-Banking",
-          "checked": false
+          "type": "todo"
+        },
+        {
+          "titel": "Fragenbogen #3",
+          "type": "question"
         }
       ]
     },
     {
       "titel": "Internet",
       "offen": true,
-      "tätigkeiten": [{ "titel": "Zehn-Finger-Schreiben", "checked": true }]
+      "tätigkeiten": [
+        {
+          "titel": "Zehn-Finger-Schreiben",
+          "type": "todo"
+        }
+      ]
     }
   ]
 }

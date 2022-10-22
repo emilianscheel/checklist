@@ -4,18 +4,24 @@ import { CircularProgressbar } from 'react-circular-progressbar';
 import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { PrismaClient } from '@prisma/client'
+import { parseCookies } from '../library/cookie';
+import jwt from '../library/jwt';
+import Navbar from '../components/Navbar';
+import { useCookies } from 'react-cookie';
 const prisma = new PrismaClient()
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
-export default function Page({ _data, _level, words }) {
+export default function Page({ _data, _json,_level, user }) {
 
     const [data, setData] = useState(_data)
+    const [json, setJson] = useState(_json)
     const [level, setLevel] = useState(_level)
     const [showPassword, setShowPassword] = useState(false)
+    const [cookie] = useCookies()
 
-    function strokeDasharray(val) {
+    function strokeDasharray(r, val) {
         let _val = val;
-        let c = Math.PI*(10*2);
+        let c = Math.PI*(r*2);
    
         if (_val < 0) { _val = 0;}
         if (_val > 100) { _val = 100;}
@@ -25,26 +31,32 @@ export default function Page({ _data, _level, words }) {
     }
     function getFullPercentage() {
         let sum = 0;
-        data['bereiche'].forEach(bereich => sum = sum + bereich['tätigkeiten'].length)
-        let sumChecked = 0
-        data['bereiche'].forEach((bereich) => bereich['tätigkeiten'].forEach((tätigkeit) => tätigkeit['checked'] ? sumChecked ++ : null))
-        
+        data['bereiche'].forEach(bereich => sum += bereich['tätigkeiten'].length)
+        let sumChecked = json['checked'].length
         return sumChecked / sum * 100
     }
     function getPercentage(bereich) {
         let sum = bereich['tätigkeiten'].length
         let sumChecked = 0
-        bereich['tätigkeiten'].forEach((tätigkeit) => tätigkeit['checked'] ? sumChecked ++ : null)
-        
+        bereich['tätigkeiten'].forEach((tätigkeit) => isChecked(tätigkeit['titel']) ? sumChecked ++ : null)
         return sumChecked / sum * 100
     }
     function onChangedChecked(event, index, _index) {
-        let _data = data
-        _data['bereiche'][index]['tätigkeiten'][_index]['checked'] = event.target.checked
-        _data['bereiche'][index]['strokeDashoffset'] = strokeDasharray(getPercentage(_data['bereiche'][index]));
-        fetchDB(_data)
+        let _json = json;
+        let _data = data;
+
+        let title = data['bereiche'][index]['tätigkeiten'][_index]["titel"]
+
+        if (event.target.checked == true) {
+            _json['checked'].push({'titel': title})
+        }
+        if (event.target.checked == false) {
+            _json['checked'] = _json['checked'].filter((obj) => JSON.stringify(obj["titel"]) === title)
+        }
+
+        fetchDB(_json)
+        setJson({..._json})
         setData({..._data})
-        setLevel({...level})
     }
     function onChangeExpanded(index) {        
         let _data = data
@@ -52,18 +64,19 @@ export default function Page({ _data, _level, words }) {
         fetchDB(_data)
         setData({..._data})
     }
+    function isChecked(tätigkeit) {
+        return json['checked'].some(obj => obj.titel == tätigkeit)
+    }
     function isLevelAbsolved(atIndex) {
-        let tätigkeiten = []
-        data['bereiche'].forEach(bereich => tätigkeiten = tätigkeiten.concat(bereich['tätigkeiten']))
         return {..._level}['level'].filter((el, index) => atIndex >= index).every((_level) => {
-            return _level['vorraussetzungen'].every(v => tätigkeiten.some(t => t['titel'] == v && t['checked']))
+            return _level['vorraussetzungen'].every(v => isChecked(v))
         })
     }
     function fetchDB(data) {
         fetch('/api/update', { 
             method: 'POST', 
-            headers: { 'Content-Type': 'application/json' }, 
-            body: JSON.stringify({ data: data, words: words })
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cookie.accessToken}, 
+            body: JSON.stringify({ json: data })
         })
     }
     function getCurrentLevel() {
@@ -85,10 +98,11 @@ export default function Page({ _data, _level, words }) {
 
     return (
         <main>
+            <Navbar/>
             <h1>Zum Erwachsen werden ...</h1>
             <div className={styles.checklist_name}>
                 <span className="material-symbols-outlined">account_circle</span>
-                <p style={{ 'display': 'flex', 'gap': '4px', 'alignItems': 'center', 'justifyContent': 'center' }}>Checkliste von <span onClick={() => setShowPassword(!showPassword)} className={styles.passcode + " " + (showPassword ? styles.show : styles.hide)}><span className="material-symbols-outlined">{showPassword ? "visibility_off" : "visibility"}</span><span dangerouslySetInnerHTML={{__html: showPassword ? words : Array.apply(null, {length: words.length}).map((char => "&middot;")).join('')}}></span></span>  <Link href="/"><a className={styles.link}>Ändern</a></Link></p>
+                <p style={{ 'display': 'flex', 'gap': '4px', 'alignItems': 'center', 'justifyContent': 'center' }}>Checkliste von <span onClick={() => setShowPassword(!showPassword)} className={styles.passcode + " " + (showPassword ? styles.show : styles.hide)}><span className="material-symbols-outlined">{showPassword ? "visibility_off" : "visibility"}</span><span dangerouslySetInnerHTML={{__html: showPassword ? user.username : Array.apply(null, {length: user.username.length}).map((char => "&middot;")).join('')}}></span></span>  <Link href="/"><a className={styles.link}>Ändern</a></Link></p>
             </div>
             <div className={styles.container}>
                 <div className={styles.level_container}>
@@ -131,7 +145,7 @@ export default function Page({ _data, _level, words }) {
                             <span>{Math.round(getPercentage(bereich))} %</span>
                             <svg width="30" height="30" style={{ 'marginRight': '6px' }}>
                                 <circle r="10" cx="15" cy="15" fill="transparent" stroke="lightgrey" strokeWidth="4px" strokeDasharray={62.5} strokeDashoffset="0"></circle>
-                                <circle r="10" cx="15" cy="15" fill="transparent" stroke="#216ec1" strokeWidth="4px" strokeDasharray={62.5} strokeDashoffset={bereich['strokeDashoffset'] ? bereich['strokeDashoffset'] : 0}></circle>
+                                <circle r="10" cx="15" cy="15" fill="transparent" stroke="#216ec1" strokeWidth="4px" strokeDasharray={62.5} strokeDashoffset={strokeDasharray(10, getPercentage(bereich)) ? strokeDasharray(10, getPercentage(bereich)) : 0}></circle>
                             </svg>
                         </div>
                         <div className={styles.expand_content + " " + (bereich['offen'] ? styles.expand_open : "")}>
@@ -141,7 +155,7 @@ export default function Page({ _data, _level, words }) {
                                     <li key={_index}>
                                         <a>{tätigkeit['titel']}</a>
                                         <div className={styles.checkbox}>
-                                            <input id={index + "-" + _index} onChange={(event) => onChangedChecked(event, index, _index)} defaultChecked={tätigkeit['checked']} type="checkbox"/><label htmlFor={index + "-" + _index}></label>
+                                            <input id={index + "-" + _index} onChange={(event) => onChangedChecked(event, index, _index)} defaultChecked={isChecked(tätigkeit['titel'])} type="checkbox"/><label htmlFor={index + "-" + _index}></label>
                                         </div>
                                     </li>
                                 )}
@@ -157,7 +171,7 @@ export default function Page({ _data, _level, words }) {
                         <div className={styles.success}>
                             <svg width="50" height="50" style={{ 'marginRight': '6px' }}>
                                 <circle r="22" cx="25" cy="25" fill="transparent" stroke="lightgrey" strokeWidth="5px" strokeDasharray={137} strokeDashoffset="0"></circle>
-                                <circle r="22" cx="25" cy="25" fill="transparent" stroke="#216ec1" strokeWidth="5px" strokeDasharray={137} strokeDashoffset={strokeDasharray(getFullPercentage())}></circle>
+                                <circle r="22" cx="25" cy="25" fill="transparent" stroke="#216ec1" strokeWidth="5px" strokeDasharray={137} strokeDashoffset={strokeDasharray(22, getFullPercentage()) ? strokeDasharray(22, getFullPercentage()) : 0}></circle>
                             </svg>
                             <span>{Math.round(getFullPercentage())} %</span>
                             <span>Gesamt</span>
@@ -173,38 +187,26 @@ export default function Page({ _data, _level, words }) {
 
 export async function getServerSideProps(context) {
 
-    // Level laden
+    const { accessToken } = parseCookies(context.req)
+
+    let user = await jwt.verifyAccessToken(accessToken)
+    
+    // Daten laden
     const level = fs.readFileSync(process.cwd() + '/data/level.json', {encoding:'utf8'});
+    const data = fs.readFileSync(process.cwd() + '/data/data.json', {encoding:'utf8'});
 
-    let checklist= await prisma.checklist.findUnique({
+    user = await prisma.users.findUnique({
         where: {
-            words: context.params.words
-        }
-    })
-
-    if (checklist == null) {
-
-        const data = fs.readFileSync(process.cwd() + '/data/data.json', {encoding:'utf8'});
-
-        await prisma.checklist.create({
-            data: {
-                words: context.params.words,
-                json: data
-            }
-        })
-    }
-
-    checklist = await prisma.checklist.findUnique({
-        where: {
-            words: context.params.words
+            id: user.payload.id
         }
     })
 
     return {
         props: {
-            _data: JSON.parse(checklist['json']),
+            _data: JSON.parse(data),
+            _json: JSON.parse(user.json),
             _level: JSON.parse(level),
-            words: context.params.words
+            user: user
         }
     }
 }

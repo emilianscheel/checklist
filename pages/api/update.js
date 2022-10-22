@@ -1,15 +1,19 @@
 
 import { PrismaClient } from '@prisma/client'
+import jwt from '../../library/jwt'
 const prisma = new PrismaClient()
 
 export default async function handler(req, res) {
 
-    await prisma.checklist.update({
+
+    let user = await jwt.verifyAccessToken(req.headers['authorization'].split(' ')[1])
+
+    await prisma.users.update({
         where: {
-            words: req.body.words
+            id: user.payload.id
         },
         data: {
-            json: JSON.stringify(req.body.data)
+            json: JSON.stringify(req.body.json)
         }
     })
 

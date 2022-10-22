@@ -1,0 +1,76 @@
+
+
+.navbar_container {
+    background: white;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    background: white;
+    z-index: 100;
+
+    .navigation_items {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        height: 58px;
+
+        .button {
+            padding: 18px 22px;
+            position: relative;
+            cursor: pointer;
+
+            &.active {
+                background: rgb(191, 191, 191);
+            }
+
+            &.active::before {
+                height: 0px;
+            }
+
+            &::before {
+                width: 100%;
+                position: absolute;
+                height: 0px;
+                background: grey;
+                bottom: 0px;
+                content: "";
+                left: 0;
+                transition: all 0.2s ease;
+            }
+
+            &:hover::before {
+                height: 4px;
+                background: rgb(0, 123, 255);
+            }
+
+            .dropdown {
+                display: none;
+                position: absolute;
+                right: 0px;
+                padding: 10px;
+                top: 58px;
+
+                ul {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                }
+
+                li {
+                    background: white;
+                    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+                    padding: 15px;
+                    text-align: center;
+
+                    &:not(:last-child) {
+                        border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+                    }
+                }
+            }
+
+            &:hover .dropdown {
+                display: block;
+            }
+        }
+    }
+}
