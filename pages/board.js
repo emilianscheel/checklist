@@ -1,4 +1,5 @@
 const fs = require('fs');
+const _ = require('lodash');
 import styles from './../styles/Page.module.scss';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import { useRef, useState } from 'react';
@@ -10,13 +11,15 @@ import Navbar from '../components/Navbar';
 import { useCookies } from 'react-cookie';
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
-export default function Page({ _data, _json,_level, user }) {
+export default function Page({ _data, _json, _level, user }) {
 
-    const [data, setData] = useState(_data)
+    const [data, setData] = useState(JSON.stringify(_data))
     const [json, setJson] = useState(_json)
     const [level, setLevel] = useState(_level)
     const [showPassword, setShowPassword] = useState(false)
     const [cookie] = useCookies()
+
+    console.log(typeof data)
 
     function strokeDasharray(r, val) {
         let _val = val;
@@ -30,7 +33,7 @@ export default function Page({ _data, _json,_level, user }) {
     }
     function getFullPercentage() {
         let sum = 0;
-        data['bereiche'].forEach(bereich => sum += bereich['tätigkeiten'].length)
+        data.forEach(bereich => sum += bereich['tätigkeiten'].length)
         let sumChecked = json['checked'].length
         return sumChecked / sum * 100
     }
@@ -44,7 +47,7 @@ export default function Page({ _data, _json,_level, user }) {
         let _json = json;
         let _data = data;
 
-        let title = data['bereiche'][index]['tätigkeiten'][_index]["titel"]
+        let title = data[index]['tätigkeiten'][_index]["titel"]
 
         if (event.target.checked == true) {
             _json['checked'].push({'titel': title, 'type': 'todo'})
@@ -59,7 +62,7 @@ export default function Page({ _data, _json,_level, user }) {
     }
     function onChangeExpanded(index) {        
         let _data = data
-        _data['bereiche'][index]['offen'] = !_data['bereiche'][index]['offen']
+        _data[index]['offen'] = !_data[index]['offen']
         fetchDB(_data)
         setData({..._data})
     }
@@ -134,10 +137,10 @@ export default function Page({ _data, _json,_level, user }) {
                     </div>
                 </div>
 
-                {data['bereiche'].map((bereich, index) => 
+                {data && data.map((bereich, index) => 
                     <div key={index}>
                         <div className={styles.line}>
-                            <div className={styles.expand_icon + " " + (bereich['offen'] ? styles.expand_icon_open : "")} onClick={() => onChangeExpanded(index)}>
+                            <div className={styles.expand_icon /*+ " " + (bereich['offen'] ? styles.expand_icon_open : "")*/} onClick={() => onChangeExpanded(index)}>
                                 <span className="material-symbols-outlined">expand_more</span>
                             </div>
                             <h1>{bereich['titel']}</h1>
@@ -147,7 +150,7 @@ export default function Page({ _data, _json,_level, user }) {
                                 <circle r="10" cx="15" cy="15" fill="transparent" stroke="#216ec1" strokeWidth="4px" strokeDasharray={62.5} strokeDashoffset={strokeDasharray(10, getPercentage(bereich)) ? strokeDasharray(10, getPercentage(bereich)) : 0}></circle>
                             </svg>
                         </div>
-                        <div className={styles.expand_content + " " + (bereich['offen'] ? styles.expand_open : "")}>
+                        <div className={styles.expand_content /*+ " " + (bereich['offen'] ? styles.expand_open : "")*/}>
                             <hr/>
                             <ul>
                                 {bereich['tätigkeiten'].map((tätigkeit, _index) => 
@@ -166,7 +169,7 @@ export default function Page({ _data, _json,_level, user }) {
                                             </Link>
                                             <div style={{flex: 1}}/>
                                             <div className={styles.checkbox}>
-                                                <input disabled="false" id={index + "-" + _index} onChange={(event) => onChangedChecked(event, index, _index)} defaultChecked={isChecked(tätigkeit['titel'])} type="checkbox"/><label htmlFor={index + "-" + _index}></label>
+                                                <input disabled={false} id={index + "-" + _index} onChange={(event) => onChangedChecked(event, index, _index)} defaultChecked={isChecked(tätigkeit['titel'])} type="checkbox"/><label htmlFor={index + "-" + _index}></label>
                                             </div>
                                         </li>
                                     : null
@@ -207,7 +210,15 @@ export async function getServerSideProps(context) {
     
     // Daten laden
     const level = fs.readFileSync(process.cwd() + '/data/level.json', {encoding:'utf8'});
-    const data = fs.readFileSync(process.cwd() + '/data/data.json', {encoding:'utf8'});
+    let data = fs.readFileSync(process.cwd() + '/data/data.new.json', {encoding:'utf8'});
+
+    data = _.groupBy(JSON.parse(data)['data'], (obj) => obj.category)
+
+    data = Object.keys(data).map(key =>{
+        return {
+        "titel": key,
+        "tätigkeiten": data[key]
+    }})
 
     user = await prisma.users.findUnique({
         where: {
@@ -219,7 +230,7 @@ export async function getServerSideProps(context) {
 
     return {
         props: {
-            _data: JSON.parse(data),
+            _data: data,
             _json: JSON.parse(user.json),
             _level: JSON.parse(level),
             user: user

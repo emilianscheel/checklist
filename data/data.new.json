@@ -1,0 +1,68 @@
+{
+  "data": [
+    {
+      "id": "rock-nähen",
+      "titel": "Rock nähen",
+      "type": "todo",
+      "category": "Nähen",
+      "enabled": true,
+      "photoRequired": false
+    },
+    {
+      "id": "kuchen-backen",
+      "titel": "Kuchen backen",
+      "type": "todo",
+      "category": "Kochen",
+      "enabled": true,
+      "photoRequired": false
+    },
+    {
+      "id": "nachtisch",
+      "titel": "Nachtisch",
+      "type": "todo",
+      "category": "Kochen",
+      "enabled": true,
+      "photoRequired": false
+    },
+    {
+      "id": "kreatives-getränk",
+      "titel": "kreatives Getränk",
+      "type": "todo",
+      "category": "Kochen",
+      "enabled": true,
+      "photoRequired": false
+    },
+    {
+      "id": "kontoauszug-abgeholt",
+      "titel": "Kontoauszug abgeholt",
+      "type": "todo",
+      "category": "Finanzen",
+      "enabled": true,
+      "photoRequired": false
+    },
+    {
+      "id": "online-banking",
+      "titel": "Online-Banking",
+      "type": "todo",
+      "category": "Finanzen",
+      "enabled": true,
+      "photoRequired": false
+    },
+    {
+      "id": "fragebogen-3",
+      "titel": "Fragenbogen #3",
+      "type": "questionnaire",
+      "category": "Finanzen",
+      "enabled": true,
+      "photoRequired": false
+    },
+    {
+      "id": "zehn-finger-schreiben",
+      "titel": "Zehn-Finger-Schreiben",
+      "type": "todo",
+      "category": "Internet",
+      "enabled": true,
+      "photoRequired": false
+    }
+  ]
+}

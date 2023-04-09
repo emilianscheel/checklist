@@ -7,9 +7,46 @@ import styles from './../../../styles/Page.module.scss';
 import { useState } from "react";
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
-export default function Page({ _questionnaire }) {
+export default function Page({ _questionnaire, _json }) {
 
+    const [json, setJson] = useState(_json)
     const [questionnaire, setQuestionnaire] = useState(_questionnaire)
+
+    const onSave = (event) => {
+        event.preventDefault()
+
+        let answers = []
+
+        questionnaire['questions'].forEach((question, index) => {
+
+            question['answers'].forEach(answer => {
+                console.log(event.target.elements[index + "-" + answer['titel']])
+            })
+        })
+
+        
+
+        let questionnaireIndex = _json['checked'].findIndex((item) => item['titel'] == questionnaire['id'])
+
+        if (questionnaireIndex) {
+            _json['checked'][questionnaireIndex] = {
+
+            }
+        }
+        else {
+            _json['checked'].push({
+                "titel": questionnaire['id'],
+                "type": "questionnaire",
+                "answers": []
+            })
+        }
+
+
+        
+    }
+    function answerExists() {
+
+    }
 
     return (
         <main>
@@ -18,21 +55,26 @@ export default function Page({ _questionnaire }) {
             <h1>{_questionnaire.titel}</h1>
 
             <div className={styles.container}>
-                <div className={styles.question_list}>
-                    {questionnaire['questions'].map((question, index) => 
-                        <div className={styles.question_item}>
-                            <h3>{question.titel}</h3>
-                            <div className={styles.answers_list}>
-                                {question['answers'].map((answer, _index) =>
-                                    <div className={styles.answer_item}>
-                                        <input type="radio" id={answer['titel']} name={question['titel']} value={answer['titel']}/>
-                                        <label for={answer['titel']}>{answer['titel']}</label>
-                                    </div>
-                                )}
+                <form onSubmit={onSave}>
+                    <div className={styles.question_list}>
+                        {questionnaire['questions'].map((question, index) => 
+                            <div className={styles.question_item}>
+                                <h3>{question.titel}</h3>
+                                <div className={styles.answers_list}>
+                                    {question['answers'].map((answer, _index) =>
+                                        <div key={_index} className={styles.answer_item}>
+                                            <input type="radio" id={index + "-" + answer['titel']} name={index + "-" + answer['titel']} value={answer['titel']}/>
+                                            <label htmlFor={index + "-" + answer['titel']}>{answer['titel']}</label>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    )}
-                </div>
+                        )}
+                    </div>
+                    <button type="submit" className={styles.button}>
+                        Antworten speichern
+                    </button>
+                </form>
             </div>
         </main>
     )

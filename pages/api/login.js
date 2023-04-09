@@ -1,13 +1,14 @@
 
 
 import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
 
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('../../library/jwt');
 
 export default async function handler(req, res) {
+
+    const prisma = new PrismaClient()
 
     const { username, password } = req.body;
     
